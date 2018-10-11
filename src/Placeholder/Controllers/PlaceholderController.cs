@@ -49,17 +49,19 @@ namespace Placeholder.Controllers
     [HttpGet("/{size:int}/{bgColor?}/{fgColor?}")]
     public IActionResult Square(int size, string bgColor, string fgColor, string text = null, int? textSize = null)
     {
+      
       return Rectangle(size, size, bgColor, fgColor, text, textSize);
     }
 
     [HttpGet("/{preset}/{bgColor?}/{fgColor?}")]
     public IActionResult Preset(string preset, string bgColor, string fgColor, string text = null, int? textSize = null)
     {
-      if (!_options.Presets.TryGetValue(preset, out var alias))
+      if (!Sizes.Presets.TryGetValue(preset, out var size))
       {
         return NotFound();
       }
-      return RedirectToActionPermanent(nameof(Preset), new { preset = alias, bgColor, fgColor, text, textSize });
+
+      return Rectangle(size.Width, size.Height, bgColor, fgColor, text, textSize);
     }
   }
 }

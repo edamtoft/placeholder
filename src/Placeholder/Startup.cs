@@ -26,6 +26,7 @@ namespace Placeholder
     public void ConfigureServices(IServiceCollection services)
     {
       services.Configure<ImageOptions>(Configuration.GetSection("Images"));
+      services.Configure<PageOptions>(Configuration.GetSection("Page"));
       services.AddMvc();
     }
 

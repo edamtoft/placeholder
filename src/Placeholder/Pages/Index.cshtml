@@ -1,11 +1,12 @@
 ﻿@page
 @using Placeholder.Pages
-@using Placeholder.Options
+@using Placeholder.Drawing
 @using Microsoft.Extensions.Options
+@using Placeholder.Controllers
 @model IndexModel
 <html lang="en-us">
 <head>
-  <title>Placeholders</title>
+  <title>@Model.PageOptions.Title</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="shortcut icon" href="/32x32?text=×" type="image/png" />
   <meta charset="utf-8">
@@ -14,10 +15,10 @@
 <body>
   <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="/">Placeholders</a>
+      <a class="navbar-brand" href="/">@Model.PageOptions.Title</a>
     </div>
   </nav>
-  <img class="img-fluid" src="/1920x480?text=Placeholder%20Images%20As%20A%20Service" alt="banner-placeholder" />
+  <img class="img-fluid" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { text = Model.PageOptions.Banner, width = 1920, height = 480 })" alt="banner-placeholder" />
   <main class="Container">
     <section id="intro" class="row  mt-4">
       <div class="col-sm-12">
@@ -28,28 +29,28 @@
       </div>
       <div class="col-md-4">
         <div class="card">
-          <img class="card-img-top" src="/480x240" alt="placeholder" />
+          <img class="card-img-top" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240 })" alt="placeholder" />
           <div class="card-body">
             <h5 class="card-title">Basic Usage</h5>
-            <p class="card-text"><code>/480x240</code></p>
+            <p class="card-text"><code>@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240 })</code></p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card">
-          <img class="card-img-top" src="/480x240/222/4FC3F7" alt="placeholder" />
+          <img class="card-img-top" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, bgColor = Model.ImageOptions.ForegroundColor, fgColor = Model.ImageOptions.BackgroundColor })" alt="placeholder" />
           <div class="card-body">
             <h5 class="card-title">Colors</h5>
-            <p class="card-text"><code>/480x240/222/4FC3F7</code></p>
+            <p class="card-text"><code>@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, bgColor = Model.ImageOptions.ForegroundColor, fgColor = Model.ImageOptions.BackgroundColor })</code></p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card">
-          <img class="card-img-top" src="/480x240?text=Sample" alt="placeholder" />
+          <img class="card-img-top" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, text = "Sample" })" alt="placeholder" />
           <div class="card-body">
             <h5 class="card-title">Custom Text</h5>
-            <p class="card-text"><code>/480x240?text=Sample</code></p>
+            <p class="card-text"><code>@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, text = "Sample" })</code></p>
           </div>
         </div>
       </div>
@@ -57,37 +58,39 @@
     <section id="api" class="row mt-4">
       <div class="col-sm-12">
         <h2>Full API</h2>
-        <h3 class="mt-4">Parameters</h3>
+        <h3 class="mt-4">Format</h3>
         <p>Urls can be formatted as follows:</p>
         <ul>
-          <li><code>@Request.Scheme://@Request.Host/{size}</code></li>
-          <li><code>@Request.Scheme://@Request.Host/{size}/{backgroundColor}</code></li>
-          <li><code>@Request.Scheme://@Request.Host/{size}/{backgroundColor}/{foregroundColor}</code></li>
+          <li><code>/{size}</code></li>
+          <li><code>/{size}/{backgroundColor}</code></li>
+          <li><code>/{size}/{backgroundColor}/{foregroundColor}</code></li>
         </ul>
+        <p>Color codes are formatted as 3 or 6 character hex codes.</p>
         <h3 class="mt-4">Sizes</h3>
         <p>
-          Sizes can be formatted as {width}x{height}, or one of the supported presets.<br />
-          Supported presets are:
+          Sizes can be formatted as <code>{width}x{height}</code> for a custom rectangle, <code>{size}</code> for a custom square, or one of the following supported presets:<br />
         </p>
-        </p>
-        @inject IOptions<ImageOptions> options
+        <p>
         <table class="table">
           <thead>
-            <tr><th>Preset</th><th>Size</th></tr>
+            <tr><th>Example URL</th><th>Size</th></tr>
           </thead>
           <tbody>
-            @foreach (var preset in options.Value.Presets)
+            @foreach (var preset in Sizes.Presets.OrderBy(p => p.Key.StartsWith("ad")).ThenBy(p => p.Value.Width))
             {
-              <tr><td>@preset.Key</td><td>@preset.Value</td></tr>
+              <tr>
+                <td>
+                  <a target="_blank" href="@Url.Action(nameof(PlaceholderController.Preset), "Placeholder", new { preset = preset.Key })">
+                    @Url.Action(nameof(PlaceholderController.Preset), "Placeholder", new { preset = preset.Key })
+                  </a>
+                </td>
+                <td>@preset.Value.Width × @preset.Value.Height</td>
+              </tr>
             }
           </tbody>
         </table>
         </p>
-        <h3 class="mt-4">Colors</h3>
-        <p>
-          Colors can be formatted as 3 or 6 digit hex color codes. Do not include the "#".
-        </p>
-        <h3 class="mt-4">Parameters</h3>
+        <h3 class="mt-4">Querystring Parameters</h3>
         <table class="table">
           <thead>
             <tr><th>Parameter</th><th>Example</th><th>Description</th></tr>
