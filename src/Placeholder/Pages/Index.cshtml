@@ -1,0 +1,104 @@
+﻿@page
+@using Placeholder.Pages
+@using Placeholder.Options
+@using Microsoft.Extensions.Options
+@model IndexModel
+<html lang="en-us">
+<head>
+  <title>Placeholders</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="shortcut icon" href="/32x32?text=×" type="image/png" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">Placeholders</a>
+    </div>
+  </nav>
+  <img class="img-fluid" src="/1280x300?text=Placeholder%20Images%20As%20A%20Service" alt="banner-placeholder" />
+  <main class="Container">
+    <section id="intro" class="row  mt-4">
+      <div class="col-sm-12">
+        <h1>Placeholder Images</h1>
+        <p>
+          Insert a sample placeholder image by adding this snippet. Any height and width combo will work:
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <img class="card-img-top" src="/480x240" alt="placeholder" />
+          <div class="card-body">
+            <h5 class="card-title">Basic Usage</h5>
+            <p class="card-text"><code>/480x240</code></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <img class="card-img-top" src="/480x240/222/4FC3F7" alt="placeholder" />
+          <div class="card-body">
+            <h5 class="card-title">Colors</h5>
+            <p class="card-text"><code>/480x240/222/4FC3F7</code></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <img class="card-img-top" src="/480x240?text=Sample" alt="placeholder" />
+          <div class="card-body">
+            <h5 class="card-title">Custom Text</h5>
+            <p class="card-text"><code>/480x240?text=Sample</code></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="api" class="row mt-4">
+      <div class="col-sm-12">
+        <h2>Full API</h2>
+        <h3 class="mt-4">Parameters</h3>
+        <p>Urls can be formatted as follows:</p>
+        <ul>
+          <li><code>@Request.Scheme://@Request.Host/{size}</code></li>
+          <li><code>@Request.Scheme://@Request.Host/{size}/{backgroundColor}</code></li>
+          <li><code>@Request.Scheme://@Request.Host/{size}/{backgroundColor}/{foregroundColor}</code></li>
+        </ul>
+        <h3 class="mt-4">Sizes</h3>
+        <p>
+          Sizes can be formatted as {width}x{height}, or one of the supported presets.<br />
+          Supported presets are:
+        </p>
+        </p>
+        @inject IOptions<ImageOptions> options
+        <table class="table">
+          <thead>
+            <tr><th>Preset</th><th>Size</th></tr>
+          </thead>
+          <tbody>
+            @foreach (var preset in options.Value.Presets)
+            {
+              <tr><td>@preset.Key</td><td>@preset.Value</td></tr>
+            }
+          </tbody>
+        </table>
+        </p>
+        <h3 class="mt-4">Colors</h3>
+        <p>
+          Colors can be formatted as 3 or 6 digit hex color codes. Do not include the "#".
+        </p>
+        <h3 class="mt-4">Parameters</h3>
+        <table class="table">
+          <thead>
+            <tr><th>Parameter</th><th>Example</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>text</td><td>?text=Sample</td><td>Sets the overlaid image text</td></tr>
+            <tr><td>textSize</td><td>?textSize=48</td><td>Sets the font size of overlaid text</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
