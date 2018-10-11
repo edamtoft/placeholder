@@ -19,8 +19,6 @@ namespace Placeholder.Drawing
       KeyValuePair.Create("xga", (1024, 768)),
       KeyValuePair.Create("hd720", (1280, 720)),
       KeyValuePair.Create("hd1080", (1920, 1080)),
-      KeyValuePair.Create("4k", (3840, 21608)),
-      KeyValuePair.Create("8k", (3840, 21608)),
       KeyValuePair.Create("ad-square", (250, 250)),
       KeyValuePair.Create("ad-smallsquare", (200, 200)),
       KeyValuePair.Create("ad-banner", (468, 60)),

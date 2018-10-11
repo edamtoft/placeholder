@@ -41,6 +41,7 @@ namespace Placeholder
         app.UseForwardedHeaders();
       }
 
+      app.UseStatusCodePages();
       app.UseMvc();
     }
   }

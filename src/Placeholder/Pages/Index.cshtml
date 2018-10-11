@@ -1,8 +1,5 @@
 ﻿@page
 @using Placeholder.Pages
-@using Placeholder.Drawing
-@using Microsoft.Extensions.Options
-@using Placeholder.Controllers
 @model IndexModel
 <html lang="en-us">
 <head>
@@ -11,6 +8,7 @@
   <link rel="shortcut icon" href="/32x32?text=×" type="image/png" />
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="@Model.PageOptions.Title - @Model.PageOptions.Banner" />
 </head>
 <body>
   <nav class="navbar navbar-dark bg-dark">
@@ -18,7 +16,14 @@
       <a class="navbar-brand" href="/">@Model.PageOptions.Title</a>
     </div>
   </nav>
-  <img class="img-fluid" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { text = Model.PageOptions.Banner, width = 1920, height = 480 })" alt="banner-placeholder" />
+  <picture>
+    <source srcset="@Model.BannerUrl(320, 400)" media="(max-width: 320px)" />
+    <source srcset="@Model.BannerUrl(480, 400)" media="(max-width: 480px)" />
+    <source srcset="@Model.BannerUrl(720, 400)" media="(max-width: 720px)" />
+    <source srcset="@Model.BannerUrl(1080, 400)" media="(max-width: 1080px)" />
+    <source srcset="@Model.BannerUrl(1920, 400)" media="(max-width: 1920px)" />
+    <img class="img-fluid" src="@Model.BannerUrl(1920, 480)" alt="banner-placeholder" />
+  </picture>
   <main class="Container">
     <section id="intro" class="row  mt-4">
       <div class="col-sm-12">
@@ -27,33 +32,18 @@
           Insert a sample placeholder image by adding this snippet. Any height and width combo will work:
         </p>
       </div>
-      <div class="col-md-4">
-        <div class="card">
-          <img class="card-img-top" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240 })" alt="placeholder" />
-          <div class="card-body">
-            <h5 class="card-title">Basic Usage</h5>
-            <p class="card-text"><code>@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240 })</code></p>
+      @foreach (var (title, url) in Model.Examples())
+      {
+        <div class="col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="@url" alt="@title" />
+            <div class="card-body">
+              <h5 class="card-title">@title</h5>
+              <p class="card-text"><a href="@url" target="_blank"><code>@url</code></a></p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <img class="card-img-top" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, bgColor = Model.ImageOptions.ForegroundColor, fgColor = Model.ImageOptions.BackgroundColor })" alt="placeholder" />
-          <div class="card-body">
-            <h5 class="card-title">Colors</h5>
-            <p class="card-text"><code>@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, bgColor = Model.ImageOptions.ForegroundColor, fgColor = Model.ImageOptions.BackgroundColor })</code></p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <img class="card-img-top" src="@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, text = "Sample" })" alt="placeholder" />
-          <div class="card-body">
-            <h5 class="card-title">Custom Text</h5>
-            <p class="card-text"><code>@Url.Action(nameof(PlaceholderController.Rectangle), "Placeholder", new { width = 480, height = 240, text = "Sample" })</code></p>
-          </div>
-        </div>
-      </div>
+      }
     </section>
     <section id="api" class="row mt-4">
       <div class="col-sm-12">
@@ -71,24 +61,20 @@
           Sizes can be formatted as <code>{width}x{height}</code> for a custom rectangle, <code>{size}</code> for a custom square, or one of the following supported presets:<br />
         </p>
         <p>
-        <table class="table">
-          <thead>
-            <tr><th>Example URL</th><th>Size</th></tr>
-          </thead>
-          <tbody>
-            @foreach (var preset in Sizes.Presets.OrderBy(p => p.Key.StartsWith("ad")).ThenBy(p => p.Value.Width))
-            {
-              <tr>
-                <td>
-                  <a target="_blank" href="@Url.Action(nameof(PlaceholderController.Preset), "Placeholder", new { preset = preset.Key })">
-                    @Url.Action(nameof(PlaceholderController.Preset), "Placeholder", new { preset = preset.Key })
-                  </a>
-                </td>
-                <td>@preset.Value.Width × @preset.Value.Height</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+          <table class="table">
+            <thead>
+              <tr><th>Example URL</th><th>Size</th></tr>
+            </thead>
+            <tbody>
+              @foreach (var (preset, url, width, height) in Model.Presets())
+              {
+                <tr>
+                  <td><a target="_blank" href="@url"><code>@url</code></a></td>
+                  <td>@width × @height</td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </p>
         <h3 class="mt-4">Querystring Parameters</h3>
         <table class="table">
@@ -100,6 +86,17 @@
             <tr><td>textSize</td><td>?textSize=48</td><td>Sets the font size of overlaid text</td></tr>
           </tbody>
         </table>
+      </div>
+    </section>
+    <section id="about" class="row mt-4">
+      <div class="col-sm-12">
+        <h2>About</h2>
+        <p>Project URL: <a href="https://github.com/edamtoft/placeholder">github.com/edamtoft/placeholder</a></p>
+        <p>Docker Image: <a href="https://hub.docker.com/r/edamtoft/placeholder">edamtoft/placeholder</a></p>
+        <p>
+          This project is built using <a href="https://www.asp.net">ASP.NET Core</a>, <a href="https://www.docker.com">Docker</a>, <a href="https://github.com/mono/SkiaSharp">SkiaSharp</a>,
+          and is open source and <a href="https://github.com/edamtoft/placeholder/blob/master/LICENSE">MIT liscenced</a>. Contributions are welcome.
+        </p>
       </div>
     </section>
   </main>

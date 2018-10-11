@@ -12,5 +12,6 @@ namespace Placeholder.Options
     public string BackgroundColor { get; set; }
     public string ForegroundColor { get; set; }
     public int TextSize { get; set; }
+    public int MaxSize { get; set; } = 1920 * 1080;
   }
 }

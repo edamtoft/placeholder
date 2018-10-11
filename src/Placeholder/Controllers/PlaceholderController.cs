@@ -24,6 +24,16 @@ namespace Placeholder.Controllers
     [HttpGet("/{width:int}x{height:int}/{bgColor?}/{fgColor?}")]
     public IActionResult Rectangle(int width, int height, string bgColor, string fgColor, string text = null, int? textSize = null)
     {
+      if (width * height > _options.MaxSize)
+      {
+        return BadRequest();
+      }
+
+      if (width <= 0 || height <= 0)
+      {
+        return BadRequest();
+      }
+
       if (string.IsNullOrEmpty(bgColor))
       {
         bgColor = _options.BackgroundColor;
