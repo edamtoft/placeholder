@@ -35,7 +35,7 @@ namespace Placeholder.Drawing
           Color = color,
           TextAlign = SKTextAlign.Center,
           IsAntialias = true,
-          Typeface = SKTypeface.FromStream(new MemoryStream(Resources.Roboto_Thin)),
+          Typeface = SKTypeface.FromFile("Roboto-Thin.ttf"),
         })
         {
           var textRectangle = new SKRect();
