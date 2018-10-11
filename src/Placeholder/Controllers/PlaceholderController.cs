@@ -56,6 +56,12 @@ namespace Placeholder.Controllers
       return new ImageResult(width, height, image);
     }
 
+    [HttpGet("/{width:int}×{height:int}/{bgColor?}/{fgColor?}")]
+    public IActionResult RectangleTimesSymbolRedirect(int width, int height, string bgColor, string fgColor, string text = null, int? textSize = null)
+    {
+      return RedirectToActionPermanent(nameof(Rectangle), new { width, height, bgColor, fgColor, text, textSize });
+    }
+
     [HttpGet("/{size:int}/{bgColor?}/{fgColor?}")]
     public IActionResult Square(int size, string bgColor, string fgColor, string text = null, int? textSize = null)
     {
