@@ -38,10 +38,8 @@ namespace Placeholder
       else
       {
         app.UseForwardedHeaders();
-        app.UseHsts();
       }
 
-      app.UseHttpsRedirection();
       app.UseMvc();
     }
   }

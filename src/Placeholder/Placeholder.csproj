@@ -1,9 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <DockerTargetOS>Linux</DockerTargetOS>
-    <UserSecretsId>26385000-f384-4323-867a-30e7ab01cf62</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.1916590" />
     <PackageReference Include="SkiaSharp" Version="1.60.3" />
   </ItemGroup>
 
