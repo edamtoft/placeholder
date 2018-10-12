@@ -11,6 +11,7 @@ using Placeholder.Options;
 
 namespace Placeholder.Pages
 {
+  [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any)]
   public class IndexModel : PageModel
   {
     public IndexModel(IOptions<ImageOptions> imageOptions, IOptions<PageOptions> pageOptions)

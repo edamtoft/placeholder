@@ -26,27 +26,14 @@ namespace Placeholder.Controllers
     {
       if (width * height > _options.MaxSize)
       {
-        return BadRequest();
+        return UnprocessableEntity();
       }
 
-      if (width <= 0 || height <= 0)
+      if (width <= 0 || height <= 0 ||
+        !SKColor.TryParse(bgColor ?? _options.BackgroundColor, out var skBgColor) || 
+        !SKColor.TryParse(fgColor ?? _options.ForegroundColor, out var skFgColor))
       {
         return BadRequest();
-      }
-
-      if (string.IsNullOrEmpty(bgColor))
-      {
-        bgColor = _options.BackgroundColor;
-      }
-
-      if (string.IsNullOrEmpty(fgColor))
-      {
-        fgColor = _options.ForegroundColor;
-      }
-
-      if (!SKColor.TryParse(bgColor, out var skBgColor) || !SKColor.TryParse(fgColor, out var skFgColor))
-      {
-        return NotFound();
       }
 
       var image = Draw.Steps(
